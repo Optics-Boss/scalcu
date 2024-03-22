@@ -71,7 +71,7 @@ impl Sandbox for Counter {
         
         let header = container(
             row![
-                 text("todos")
+                 text(&self.input)
             ]
             .align_items(Alignment::Center)
         );
