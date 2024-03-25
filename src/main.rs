@@ -6,7 +6,8 @@ pub fn main() -> iced::Result {
 }
 
 struct Counter {
-    input: String,
+    input_1: String,
+    input_2: String,
     arithmetic: Arithmetic,
 }
 
@@ -33,6 +34,7 @@ impl Arithmetic {
 pub enum Message {
     ChangeTextInput(String),
     SetArithmetic(Arithmetic),
+    Calculate(),
     Clear(),
 }
 
@@ -41,7 +43,8 @@ impl Sandbox for Counter {
 
     fn new() -> Self {
         Self { 
-            input: "".to_owned(), 
+            input_1: "".to_owned(), 
+            input_2: "".to_owned(), 
             arithmetic: Arithmetic::Other,
         }
     }
@@ -53,13 +56,30 @@ impl Sandbox for Counter {
     fn update(&mut self, message: Message) {
         match message {
             Message::ChangeTextInput(value) => {
-                self.input += &value;
+                if self.arithmetic == Arithmetic::Other {
+                    self.input_1 += &value;
+                } else if !self.input_1.is_empty() {
+                    self.input_2 += &value;
+                } 
             },
             Message::SetArithmetic(arithmetic) => {
                 self.arithmetic = arithmetic;
-            }
+            },
+            Message::Calculate() => {
+                match self.arithmetic {
+                    Arithmetic::Multiplication => self.input_1 = (self.input_1.parse::<f32>().expect("NaN") * self.input_2.parse::<f32>().expect("NaN")).to_string(),
+                    Arithmetic::Addition => self.input_1 = (self.input_1.parse::<f32>().expect("NaN") + self.input_2.parse::<f32>().expect("NaN")).to_string(),
+                    Arithmetic::Division => self.input_1 = (self.input_1.parse::<f32>().expect("NaN") / self.input_2.parse::<f32>().expect("NaN")).to_string(),
+                    Arithmetic::Subtraction => self.input_1 = (self.input_1.parse::<f32>().expect("NaN") - self.input_2.parse::<f32>().expect("NaN")).to_string(),
+                    _ => () 
+                }
+
+                self.input_2 = "".to_string();
+            },
             Message::Clear() => {
-                self.input = "".to_string();
+                self.input_1 = "".to_string();
+                self.input_2 = "".to_string();
+                self.arithmetic = Arithmetic::Other;
             }
         }
     }
@@ -68,7 +88,10 @@ impl Sandbox for Counter {
         
         let header = container(
             row![
-                 text(&self.input)
+                 text(" Input 1 "),
+                 text(&self.input_1),
+                 text(" Input 2 "),
+                 text(&self.input_2)
             ]
             .align_items(Alignment::Center)
         );
@@ -81,7 +104,7 @@ impl Sandbox for Counter {
                 button("X").on_press(Message::SetArithmetic(Arithmetic::Multiplication)),
                 button("+").on_press(Message::SetArithmetic(Arithmetic::Addition)),
                 button("-").on_press(Message::SetArithmetic(Arithmetic::Subtraction)),
-                button("=").on_press(Message::ChangeTextInput("1".to_string())),
+                button("=").on_press(Message::Calculate()),
             ]
         );
 
