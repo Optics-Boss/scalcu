@@ -8,6 +8,7 @@ pub fn main() -> iced::Result {
 struct Counter {
     input_1: String,
     input_2: String,
+    result_input: String,
     arithmetic: Arithmetic,
 }
 
@@ -45,6 +46,7 @@ impl Sandbox for Counter {
         Self { 
             input_1: "".to_owned(), 
             input_2: "".to_owned(), 
+            result_input: "".to_owned(), 
             arithmetic: Arithmetic::Other,
         }
     }
@@ -53,13 +55,16 @@ impl Sandbox for Counter {
         String::from("Scalcu - Calculator")
     }
 
+
     fn update(&mut self, message: Message) {
         match message {
             Message::ChangeTextInput(value) => {
                 if self.arithmetic == Arithmetic::Other {
                     self.input_1 += &value;
+                    self.result_input = self.input_1.clone();
                 } else if !self.input_1.is_empty() {
                     self.input_2 += &value;
+                    self.result_input = self.input_2.clone();
                 } 
             },
             Message::SetArithmetic(arithmetic) => {
@@ -73,12 +78,14 @@ impl Sandbox for Counter {
                     Arithmetic::Subtraction => self.input_1 = (self.input_1.parse::<f32>().expect("NaN") - self.input_2.parse::<f32>().expect("NaN")).to_string(),
                     _ => () 
                 }
-
+                
+                self.result_input = self.input_1.clone();
                 self.input_2 = "".to_string();
             },
             Message::Clear() => {
                 self.input_1 = "".to_string();
                 self.input_2 = "".to_string();
+                self.result_input = self.input_1.clone();
                 self.arithmetic = Arithmetic::Other;
             }
         }
@@ -88,10 +95,7 @@ impl Sandbox for Counter {
         
         let header = container(
             row![
-                 text(" Input 1 "),
-                 text(&self.input_1),
-                 text(" Input 2 "),
-                 text(&self.input_2)
+                 text(&self.result_input),
             ]
             .align_items(Alignment::Center)
         );
