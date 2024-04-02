@@ -8,6 +8,14 @@ fn main() {
     dioxus::launch(App);
 }
 
+pub enum Arithmetic{
+    Addition,
+    Subtraction,
+    Multiplication,
+    Division,
+    Other,
+}
+
 #[component]
 fn App() -> Element {
     let mut result_1 = use_signal(|| "".to_string());
