@@ -1,9 +1,15 @@
 [package]
 name = "scalcu"
 version = "0.1.0"
+authors = ["Optics-Boss <->"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-iced = "0.12.1"
+
+dioxus = { version = "0.5", features = ["desktop"] }
+
+# Debug
+log = "0.4.19"
+dioxus-logger = "0.4.1"
