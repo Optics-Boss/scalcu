@@ -19,10 +19,13 @@ pub enum Arithmetic{
 #[component]
 fn App() -> Element {
     let mut result_1 = use_signal(|| "".to_string());
+    let mut result_2 = use_signal(|| "".to_string());
+    let mut arithmetic = use_signal(|| Arithmetic::Other);
 
     rsx! {
         link { rel: "stylesheet", href: "main.css" }
         h1 { class: "white", "{result_1}"}
+
         div { id: "numbers__left",
             button { onclick: move |_| result_1.write().push('7'), "7"}
             button { onclick: move |_| result_1.write().push('4'), "4"}
@@ -44,6 +47,12 @@ fn App() -> Element {
 
         div { id: "other",
             button { onclick: move |_| result_1.set("".to_string()), "C"}
+            button { onclick: move |_| arithmetic.set(Arithmetic::Addition), "+"}
+            button { onclick: move |_| arithmetic.set(Arithmetic::Subtraction), "-"}
+            button { onclick: move |_| arithmetic.set(Arithmetic::Multiplication), "*"}
+            button { onclick: move |_| arithmetic.set(Arithmetic::Division), "/"}
+            button { onclick: move |_| result_1.set("".to_string()), "="}
         }
     }
 }
+
